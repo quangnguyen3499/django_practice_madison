@@ -1,5 +1,5 @@
 from rest_framework import status
-from student_manager.models import Subject
+from student_manager.subjects.models import Subject
 import pytest
 from django.urls import reverse
 
@@ -17,7 +17,7 @@ def get_list_params():
         "page_size": 10
     }
 
-subjects = Subject.undeleted_objects
+subjects = Subject.objects
 @pytest.mark.django_db
 class TestCreateSubject:    
     url = reverse('create-subject')

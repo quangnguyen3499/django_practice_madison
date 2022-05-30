@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from student_manager.models import Student
+from .models import Student
 from django.conf import settings
 from datetime import datetime
 

@@ -1,5 +1,5 @@
 from rest_framework import status
-from student_manager.models import User
+from student_manager.users.models import User
 import pytest
 from django.urls import reverse
 import random
@@ -25,7 +25,7 @@ def get_list_params():
         "page_size": 10
     }
 
-users = User.undeleted_objects
+users = User.objects
 
 @pytest.mark.django_db
 class TestCreateUser:    

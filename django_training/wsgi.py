@@ -14,6 +14,6 @@ sys.path.append('.')
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'django_training.settings.development')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'django_training.settings')
 
 application = get_wsgi_application()

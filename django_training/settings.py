@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 from pathlib import Path
 import dotenv
 import os
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -44,9 +45,17 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'student_manager',
     'whitenoise.runserver_nostatic',
     'graph_ingredients',
+    'allauth',
+    'allauth.account',
+    'dj_rest_auth',
+    'dj_rest_auth.registration',
+    'rest_framework.authtoken',
+    'student_manager.users',
+    'student_manager.students',
+    'student_manager.classrooms',
+    'student_manager.subjects',
 ]
 
 MIDDLEWARE = [
@@ -134,7 +143,7 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Override model user
-AUTH_USER_MODEL = 'student_manager.User'
+AUTH_USER_MODEL = 'users.User'
 
 DATE_TIME_FORMAT = "%Y-%m-%d %H:%M:%S"
 
@@ -162,4 +171,38 @@ GRAPHENE = {
 }
 
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
-STATIC_ROOT = os.path.join(PROJECT_DIR, 'static')
+STATIC_ROOT = os.path.join(PROJECT_DIR, 'staticfiles')
+
+REST_AUTH_REGISTER_SERIALIZERS = {
+    'REGISTER_SERIALIZER': 'student_manager.users.serializers.UserRegisterSerializer',
+}
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'baoquanggogreen341999@gmail.com'
+EMAIL_HOST_PASSWORD = 'baoquanggogreenquang_81%_smile'
+DOMAIN_URL = 'localhost'
+
+CSRF_COOKIE_SECURE = True
+
+DEBUG = False
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'student_manager',
+        'USER': 'root',
+        'PASSWORD': '03041999',
+        'HOST': 'localhost',
+        'PORT': '5432'
+    }
+}
+
+# DATABASES = {'default': {}}
+# db_from_env = dj_database_url.config(
+#     conn_max_age=600, 
+#     default='postgres://qreiogwdduhteo:a8aa17f83e87119d84036612762e969d09f0631ef601301727f3a8b6784c1003@ec2-18-210-64-223.compute-1.amazonaws.com:5432/d9o48scpevsf7m'
+# )
+# DATABASES['default'].update(db_from_env)

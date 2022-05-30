@@ -1,5 +1,5 @@
 from rest_framework import status
-from student_manager.models import ClassRoom
+from student_manager.classrooms.models import ClassRoom
 import pytest
 from django.urls import reverse
 
@@ -17,7 +17,7 @@ def get_list_params():
         "page_size": 10
     }
     
-classrooms = ClassRoom.undeleted_objects
+classrooms = ClassRoom.objects
 @pytest.mark.django_db
 class TestCreateClassRoom:    
     url = reverse('create-classroom')

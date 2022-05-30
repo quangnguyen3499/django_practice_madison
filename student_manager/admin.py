@@ -1,5 +1,8 @@
 from django.contrib import admin
-from .models import User, Student, Subject, ClassRoom
+from users.models import User
+from students.models import Student
+from subjects.models import Subject
+from classrooms.models import ClassRoom
 from django.contrib.auth.models import Group
 
 admin.site.register(Student)

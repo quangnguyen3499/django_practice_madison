@@ -1,5 +1,8 @@
 from factory.django import DjangoModelFactory
-from student_manager.models import User, ClassRoom, Subject, Student
+from users.models import User
+from classrooms.models import ClassRoom
+from subjects.models import Subject
+from students.models import Student
 import factory
 from faker import Factory
 import random

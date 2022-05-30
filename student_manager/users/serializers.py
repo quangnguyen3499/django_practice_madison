@@ -1,8 +1,16 @@
 from rest_framework import serializers
-from commons.exceptions import ValidationException
-from student_manager.models import User
+from .models import User
 from django.conf import settings
 from datetime import datetime
+from dj_rest_auth.registration.serializers import RegisterSerializer
+
+class UserRegisterSerializer(RegisterSerializer):
+    username = serializers.CharField(max_length=150)
+    first_name = serializers.CharField(required=False, default="")
+    last_name = serializers.CharField(required=False, default="")
+    email = serializers.CharField(
+        required=False, default="", allow_blank=True, allow_null=True
+    )
 
 class CreateUserSerializer(serializers.ModelSerializer):
     username = serializers.CharField(max_length=150)

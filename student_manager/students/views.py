@@ -1,6 +1,6 @@
 from django.http import HttpRequest
 from commons.exceptions import NotFoundException, ValidationException
-from student_manager.models import Student
+from .models import Student
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .serializers import CreateStudentSerializer, DetailsStudentSerializer, DeleteStudentSerializer
@@ -27,14 +27,14 @@ class GetAndUpdateAndDeleteStudentView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request: HttpRequest, student_id: int):
-        data = Student.undeleted_objects.filter(pk=student_id)
+        data = Student.objects.filter(pk=student_id)
         if not data.exists():
             raise NotFoundException
         return Response(DetailsStudentSerializer(data.first()).data)
     
     def put(self, request: HttpRequest, student_id: int):
         data: dict = request.data
-        student = Student.undeleted_objects.filter(pk=student_id)
+        student = Student.objects.filter(pk=student_id)
         if not student.exists():
             raise NotFoundException
         serializer_data = DetailsStudentSerializer(student.first(), data=data)
@@ -45,7 +45,7 @@ class GetAndUpdateAndDeleteStudentView(APIView):
             raise ValidationException(data=serializer_data.errors)
 
     def delete(self, request: HttpRequest, student_id: int):
-        student = Student.undeleted_objects.filter(pk=student_id)
+        student = Student.objects.filter(pk=student_id)
         if not student.exists():
             raise NotFoundException
         serializer_data = DeleteStudentSerializer(student.first(), data=request.data)
@@ -63,5 +63,5 @@ class ListStudentView(ListAPIView):
 
     def get_queryset(self):        
         data: dict = self.request.GET
-        queryset = Student.undeleted_objects.filter(name__icontains=data['name']).order_by('id')
+        queryset = Student.objects.filter(name__icontains=data['name']).order_by('id')
         return queryset

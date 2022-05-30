@@ -1,6 +1,6 @@
 from django.http import HttpRequest
 from commons.middlewares.pagination import StandardResultsSetPagination
-from student_manager.models import User
+from .models import User
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from .serializers import CreateUserSerializer, DetailsUserSerializer, DeleteUserSerializer
@@ -8,6 +8,7 @@ from rest_framework.generics import ListAPIView
 from rest_framework.authentication import BasicAuthentication
 from commons.exceptions import NotFoundException, ValidationException
 from rest_framework.permissions import IsAuthenticated
+from .services import send_mail_service
 
 class CreateUserView(APIView):
     def post(self, request: HttpRequest):
@@ -27,7 +28,7 @@ class ListUserView(ListAPIView):
 
     def get_queryset(self):
         data: dict = self.request.GET
-        queryset = User.undeleted_objects.filter(username__icontains=data['username']).order_by('id')
+        queryset = User.objects.filter(username__icontains=data['username']).order_by('id')
         return queryset
 
 class GetAndUpdateAndDeleteUserView(APIView):
@@ -35,7 +36,7 @@ class GetAndUpdateAndDeleteUserView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request: HttpRequest, user_id: int):
-        data = User.undeleted_objects.filter(pk=user_id)
+        data = User.objects.filter(pk=user_id)
         if not data.exists():
             raise NotFoundException
         serializer_data = DetailsUserSerializer(data.first())
@@ -43,7 +44,7 @@ class GetAndUpdateAndDeleteUserView(APIView):
 
     def put(self, request: HttpRequest, user_id: int):
         data: dict = request.data
-        user = User.undeleted_objects.filter(pk=user_id)
+        user = User.objects.filter(pk=user_id)
         if not user.exists():
             raise NotFoundException
         serializer_data = DetailsUserSerializer(user.first(), data=data)
@@ -54,7 +55,7 @@ class GetAndUpdateAndDeleteUserView(APIView):
             raise ValidationException(data=serializer_data.errors)
 
     def delete(self, request: HttpRequest, user_id: int):
-        user = User.undeleted_objects.filter(pk=user_id)
+        user = User.objects.filter(pk=user_id)
         if not user.exists():
             raise NotFoundException
         serializer_data = DeleteUserSerializer(user.first(), data=request.data)
@@ -63,3 +64,11 @@ class GetAndUpdateAndDeleteUserView(APIView):
             return Response({})
         else:
             raise ValidationException(data=serializer_data.errors)
+
+class SendMailResetPasswordView(APIView):
+    authentication_classes = [BasicAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request: HttpRequest):
+        send_mail_service(email=request.data['email'], content="test content")
+        return Response({})

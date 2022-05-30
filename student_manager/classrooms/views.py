@@ -2,7 +2,7 @@ from django.http import HttpRequest
 from commons.exceptions import NotFoundException, ValidationException
 from commons.middlewares.pagination import StandardResultsSetPagination
 from .serializers import CreateClassRoomSerializer, DetailsClassRoomSerializer, DeleteClassRoomSerializer
-from student_manager.models import ClassRoom
+from .models import ClassRoom
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.generics import ListAPIView
@@ -30,7 +30,7 @@ class ListClassRoomView(ListAPIView):
 
     def get_queryset(self):
         data: dict = self.request.GET
-        queryset = ClassRoom.undeleted_objects.filter(name__icontains=data['name']).order_by('id')
+        queryset = ClassRoom.objects.filter(name__icontains=data['name']).order_by('id')
         return queryset
 
 class GetAndUpdateAndDeleteClassRoomView(APIView):
@@ -38,7 +38,7 @@ class GetAndUpdateAndDeleteClassRoomView(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request: HttpRequest, class_room_id: int):
-        data = ClassRoom.undeleted_objects.filter(pk=class_room_id).first()
+        data = ClassRoom.objects.filter(pk=class_room_id).first()
         if data is None:
             raise NotFoundException
         response = DetailsClassRoomSerializer(data)
@@ -46,7 +46,7 @@ class GetAndUpdateAndDeleteClassRoomView(APIView):
 
     def put(self, request: HttpRequest, class_room_id: int):
         data: dict = request.data
-        classroom = ClassRoom.undeleted_objects.filter(pk=class_room_id).first()
+        classroom = ClassRoom.objects.filter(pk=class_room_id).first()
         if classroom is None:
             raise NotFoundException
         serializer_data = DetailsClassRoomSerializer(classroom, data=data)
@@ -57,7 +57,7 @@ class GetAndUpdateAndDeleteClassRoomView(APIView):
             raise ValidationException(data=serializer_data.errors)
 
     def delete(self, request: HttpRequest, class_room_id: int):
-        data = ClassRoom.undeleted_objects.filter(pk=class_room_id)
+        data = ClassRoom.objects.filter(pk=class_room_id)
         if not data.exists():
             raise NotFoundException
         serializer_data = DeleteClassRoomSerializer(data.first(), data=request.data)

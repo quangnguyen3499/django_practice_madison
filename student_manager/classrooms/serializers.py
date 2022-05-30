@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from commons.exceptions import ValidationException
-from student_manager.models import ClassRoom
+from .models import ClassRoom
 from datetime import datetime
 from django.conf import settings
 
