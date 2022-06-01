@@ -13,14 +13,16 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 from pathlib import Path
 import dotenv
 import os
-import dj_database_url
+import environ
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+env = environ.Env(DEBUG=(bool, False), ENV_FILE=(str, None), ALLOWED_HOSTS=(list, []))
+
 dotenv_file = os.path.join(BASE_DIR, ".env")
 if os.path.isfile(dotenv_file):
-        dotenv.load_dotenv(dotenv_file)
+    dotenv.load_dotenv(dotenv_file)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
@@ -56,6 +58,8 @@ INSTALLED_APPS = [
     'student_manager.students',
     'student_manager.classrooms',
     'student_manager.subjects',
+    'storages',
+    'student_manager.uploader',
 ]
 
 MIDDLEWARE = [
@@ -187,7 +191,7 @@ DOMAIN_URL = 'localhost'
 
 CSRF_COOKIE_SECURE = True
 
-DEBUG = False
+DEBUG = True
 
 DATABASES = {
     'default': {
@@ -206,3 +210,17 @@ DATABASES = {
 #     default='postgres://qreiogwdduhteo:a8aa17f83e87119d84036612762e969d09f0631ef601301727f3a8b6784c1003@ec2-18-210-64-223.compute-1.amazonaws.com:5432/d9o48scpevsf7m'
 # )
 # DATABASES['default'].update(db_from_env)
+
+AWS_ACCESS_KEY_ID = 'AKIAYMACZHLYSI623T4A'
+AWS_SECRET_ACCESS_KEY = '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'
+AWS_STORAGE_BUCKET_NAME = 'ocr-bucket-999'
+AWS_S3_SIGNATURE_VERSION = 's3v4'
+AWS_S3_REGION_NAME = 'ap-southeast-1'
+AWS_S3_FILE_OVERWRITE = False
+AWS_DEFAULT_ACL = None
+AWS_S3_VERIFY = True
+DEFAULT_FILE_STORAGE = 'student_manager.uploader.services.PublicS3MediaStorage'
+
+M360_URL = env("M360_URL", default="https://api.m360.com.ph/v3/api/globelabs/mt/")
+M360_PASSPHRASE='Km2dprID6v3J'
+M360_SHORTCODE=21581350

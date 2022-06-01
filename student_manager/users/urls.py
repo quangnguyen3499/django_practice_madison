@@ -10,4 +10,5 @@ urlpatterns = [
     path('list', views.ListUserView.as_view(), name='get-list-user'),
     path('<int:user_id>', views.GetAndUpdateAndDeleteUserView.as_view(), name='get-update-delete-user'),
     path('reset_mail/', views.SendMailResetPasswordView.as_view(), name="send-mail-reset-password"),
+    path('send_otp/', views.SendResetOtp.as_view(), name="send-otp"),
 ]

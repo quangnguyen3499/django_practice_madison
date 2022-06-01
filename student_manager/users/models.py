@@ -29,7 +29,7 @@ class UserManager(BaseUserManager):
             first_name = first_name,
             last_name = last_name
         )
-        
+
         user.is_staff = True
         user.is_superuser = True
         user.set_password(password)
@@ -60,3 +60,10 @@ class User(AbstractBaseUser, PermissionsMixin):
         self.otp_code = generate_otp()
         self.otp_expires_at = timezone.now() + timedelta(hours=24)
         self.save()
+
+    def validate_otp(self, otp: str) -> bool:
+        if timezone.now() > self.otp_expires_at:
+            return False
+        if self.otp_code != otp:
+            return False
+        return True

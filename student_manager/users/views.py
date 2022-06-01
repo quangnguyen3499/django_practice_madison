@@ -8,7 +8,7 @@ from rest_framework.generics import ListAPIView
 from rest_framework.authentication import BasicAuthentication
 from commons.exceptions import NotFoundException, ValidationException
 from rest_framework.permissions import IsAuthenticated
-from .services import send_mail_service
+from .services import send_mail_service, send_user_otp
 
 class CreateUserView(APIView):
     def post(self, request: HttpRequest):
@@ -71,4 +71,12 @@ class SendMailResetPasswordView(APIView):
 
     def post(self, request: HttpRequest):
         send_mail_service(email=request.data['email'], content="test content")
+        return Response({})
+
+class SendResetOtp(APIView):
+    authentication_classes = [BasicAuthentication]
+    permission_classes = [IsAuthenticated]
+    
+    def post(self, request: HttpRequest):
+        send_user_otp(mobile_number=request.data['mobile_number'])
         return Response({})
