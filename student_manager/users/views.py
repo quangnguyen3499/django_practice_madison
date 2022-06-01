@@ -8,7 +8,8 @@ from rest_framework.generics import ListAPIView
 from rest_framework.authentication import BasicAuthentication
 from commons.exceptions import NotFoundException, ValidationException
 from rest_framework.permissions import IsAuthenticated
-from .services import send_mail_service, send_user_otp
+from .services import send_mail_service, send_user_otp, change_password, validate_user_otp
+from rest_framework import serializers
 
 class CreateUserView(APIView):
     def post(self, request: HttpRequest):
@@ -70,13 +71,49 @@ class SendMailResetPasswordView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request: HttpRequest):
-        send_mail_service(email=request.data['email'], content="test content")
+        new_otp = request.user.generate_otp()
+        send_mail_service(
+            email=request.data['email'], 
+            content="test content",
+            otp = new_otp
+        )
         return Response({})
+
+class PasswordOTPView(APIView):
+    authentication_classes = [BasicAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    class InputSerializer(serializers.Serializer):
+        otp = serializers.CharField()
+
+    def post(self, request: HttpRequest):
+        serializer = self.InputSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        token = validate_user_otp(user=request.user, otp=serializer.validated_data['otp'])
+        return Response({"token": token})
+
+class ChangePasswordView(APIView):
+    authentication_classes = [BasicAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    class InputSerializer(serializers.Serializer):
+        token = serializers.CharField()
+        password1 = serializers.CharField()
+        password2 = serializers.CharField()
+
+    def post(self, request: HttpRequest):
+        serializer = self.InputSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        change_password(user=request.user, **serializer.validated_data)
+        return Response({"message": "Success"})
 
 class SendResetOtp(APIView):
     authentication_classes = [BasicAuthentication]
     permission_classes = [IsAuthenticated]
     
     def post(self, request: HttpRequest):
-        send_user_otp(mobile_number=request.data['mobile_number'])
+        send_user_otp(
+            mobile_number=request.data['mobile_number'],
+            message = request.data['message']
+        )
         return Response({})

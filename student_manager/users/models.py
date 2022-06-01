@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import datetime, timedelta
 import secrets
 import string
 from django.utils import timezone
@@ -60,10 +60,31 @@ class User(AbstractBaseUser, PermissionsMixin):
         self.otp_code = generate_otp()
         self.otp_expires_at = timezone.now() + timedelta(hours=24)
         self.save()
+        return self.otp_code
 
     def validate_otp(self, otp: str) -> bool:
         if timezone.now() > self.otp_expires_at:
             return False
         if self.otp_code != otp:
+            return False
+        return True
+
+class MobileOtp(models.Model):
+    mobile_number = models.CharField(max_length=20)
+    code = models.CharField(max_length=20)
+    expires_at = models.DateTimeField(default=timezone.now())
+    updated_at = models.DateTimeField()
+    created_at = models.DateTimeField()
+
+    def generate(self):
+        if timezone.now() > self.expires_at - timedelta(minutes=2):
+            self.code = generate_otp()
+            self.expires_at = timezone.now() + timedelta(hours=24)
+            self.save()
+
+    def validate(self, otp: str) -> bool:
+        if timezone.now() > self.expires_at:
+            return False
+        if self.code != otp:
             return False
         return True
