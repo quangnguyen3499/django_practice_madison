@@ -4,6 +4,8 @@ from rest_framework.response import Response
 from .services import PublicS3MediaStorage, file_upload
 from rest_framework.views import APIView
 from django.core.files import File
+from django.views.generic import TemplateView
+from student_manager.users.models import User
 
 @api_view(('POST',))
 def save_file(request):
@@ -21,3 +23,11 @@ class UploadFile(APIView):
         converted_file = File(file, file.name)
         file_url = file_upload(converted_file)
         return Response({"message": file_url})
+
+class InvoiceView(TemplateView):
+    template_name = "templates/invoice.html"
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['user'] = User.objects.get(kwargs['user_id'])
+        return context

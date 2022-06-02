@@ -10,6 +10,7 @@ from commons.exceptions import NotFoundException, ValidationException
 from rest_framework.permissions import IsAuthenticated
 from .services import send_mail_service, send_user_otp, change_password, validate_user_otp
 from rest_framework import serializers
+# from rest_framework_simplejwt.authentication import JWTAuthentication
 
 class CreateUserView(APIView):
     def post(self, request: HttpRequest):
