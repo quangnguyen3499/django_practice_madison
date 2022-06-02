@@ -44,6 +44,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     password = models.CharField(max_length=128)
     is_superuser = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=False)
     last_login = models.DateTimeField(max_length=(6), null=True, blank=True)
     otp_code = models.CharField(max_length=6, default=generate_otp)
     otp_expires_at = models.DateTimeField(default=timezone.now)
@@ -51,6 +52,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     deleted_at = models.DateTimeField(max_length=(6), null=True, blank=True)
     updated_date = models.DateTimeField(auto_now=True, max_length=(6))
     created_date = models.DateTimeField(auto_now_add=True, max_length=(6))
+    date_joined = models.DateTimeField(max_length=(6), null=True, blank=True)
 
     objects = UserManager()
 

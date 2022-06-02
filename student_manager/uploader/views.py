@@ -25,9 +25,9 @@ class UploadFile(APIView):
         return Response({"message": file_url})
 
 class InvoiceView(TemplateView):
-    template_name = "templates/invoice.html"
-    
+    template_name = "invoice.html"
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['user'] = User.objects.get(kwargs['user_id'])
+        context['user'] = User.objects.get(pk=kwargs['pk'])
         return context
