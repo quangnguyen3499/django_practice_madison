@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import timedelta
 import secrets
 import string
 from django.utils import timezone
@@ -74,7 +74,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 class MobileOtp(models.Model):
     mobile_number = models.CharField(max_length=20)
     code = models.CharField(max_length=20)
-    expires_at = models.DateTimeField(default=timezone.now())
+    expires_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField()
     created_at = models.DateTimeField()
 

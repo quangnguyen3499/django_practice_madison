@@ -12,7 +12,7 @@ class Upload(models.Model):
 class Invoice(models.Model):
     user = models.ForeignKey("users.User", related_name="invoices", on_delete=models.PROTECT)
     invoice_number = models.CharField(max_length=20)
-    invoice_amount = models.IntegerField()
+    invoice_amount = models.FloatField()
     invoice_date = models.DateField()
     updated_at = models.DateTimeField(auto_now_add=timezone.now())
     created_at = models.DateTimeField(auto_now=timezone.now())

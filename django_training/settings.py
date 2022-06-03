@@ -49,7 +49,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'whitenoise.runserver_nostatic',
-    'graph_ingredients',
+    'graph_ingredients.ingredients',
     'allauth',
     'allauth.account',
     'dj_rest_auth',
@@ -61,6 +61,8 @@ INSTALLED_APPS = [
     'student_manager.subjects',
     'storages',
     'student_manager.uploader',
+    'student_manager.ocr',
+    'graphene_django',
 ]
 
 MIDDLEWARE = [
@@ -103,8 +105,8 @@ REST_FRAMEWORK = {
     ],
     'EXCEPTION_HANDLER': 'commons.middlewares.exception_handler.exception_handler',
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        # 'rest_framework.authentication.BasicAuthentication',
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+        # 'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
 }
 

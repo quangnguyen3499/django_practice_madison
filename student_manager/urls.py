@@ -6,4 +6,5 @@ urlpatterns = [
     path('subjects/', include('student_manager.subjects.urls')),
     path('users/', include('student_manager.users.urls')),
     path('upload/', include('student_manager.uploader.urls')),
+    path('ocr/', include('student_manager.ocr.urls')),
 ]
