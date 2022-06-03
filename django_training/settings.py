@@ -63,6 +63,8 @@ INSTALLED_APPS = [
     'student_manager.uploader',
     'student_manager.ocr',
     'graphene_django',
+    'django_celery_beat',
+    'django_celery_results',
 ]
 
 MIDDLEWARE = [
@@ -148,7 +150,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = 'django_training/staticfiles/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
@@ -207,7 +209,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'student_manager',
         'USER': 'root',
-        'PASSWORD': '03041999',
+        'PASSWORD': '',
         'HOST': 'localhost',
         'PORT': '5432'
     }
@@ -233,3 +235,20 @@ DEFAULT_FILE_STORAGE = 'student_manager.uploader.services.PublicS3MediaStorage'
 M360_URL = env("M360_URL", default="https://api.m360.com.ph/v3/api/globelabs/mt/")
 M360_PASSPHRASE='Km2dprID6v3J'
 M360_SHORTCODE=21581350
+
+# # celery settings
+# CELERY_BROKER_URL = "redis://redis:6379"
+# CELERY_RESULT_BACKEND = "redis://redis:6379"
+
+# from celery.schedules import crontab
+
+# CELERY_BEAT_SCHEDULE = {
+#     "sample_task": {
+#         "task": "core.tasks.sample_task",
+#         "schedule": crontab(minute="*/1"),
+#     },
+#     "send_email_invoice": {
+#         "task": "core.tasks.send_email_invoice",
+#         "schedule": crontab(hour="*/1"),
+#     },
+# }

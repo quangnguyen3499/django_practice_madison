@@ -2,6 +2,7 @@ from rest_framework.authentication import BasicAuthentication
 from rest_framework.views import APIView
 from student_manager.ocr.services import create_invoice
 from student_manager.ocr.services.pymupdf import pymupdf
+from student_manager.ocr.services.pymupdf_2 import pymupdf_2
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 
