@@ -1,4 +1,5 @@
 from io import BytesIO
+from rest_framework.authentication import BasicAuthentication
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .services import PublicS3MediaStorage, file_upload
@@ -6,6 +7,7 @@ from rest_framework.views import APIView
 from django.core.files import File
 from django.views.generic import TemplateView
 from student_manager.users.models import User
+from rest_framework.permissions import IsAuthenticated
 
 @api_view(('POST',))
 def save_file(request):
@@ -31,3 +33,11 @@ class InvoiceView(TemplateView):
         context = super().get_context_data(**kwargs)
         context['user'] = User.objects.get(pk=kwargs['pk'])
         return context
+
+# class InvoiceAPIView(APIView):
+#     permission_classes = [IsAuthenticated]
+#     authentication_classes = [BasicAuthentication]
+    
+#     def post(self, request):
+#         current_user = request.user
+#         invoice = create_invoice(**request, user=current_user)
