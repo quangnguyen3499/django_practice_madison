@@ -11,8 +11,8 @@ from rest_framework.permissions import IsAuthenticated
 
 @api_view(('POST',))
 def save_file(request):
-    file_name = "sensui.txt"
-    file_content = b"I will release the S-Class demons!"
+    file_name = "sample1.txt"
+    file_content = b"Sample text file"
     file_content_io = BytesIO(file_content)
 
     storage = PublicS3MediaStorage()
@@ -33,11 +33,3 @@ class InvoiceView(TemplateView):
         context = super().get_context_data(**kwargs)
         context['user'] = User.objects.get(pk=kwargs['pk'])
         return context
-
-# class InvoiceAPIView(APIView):
-#     permission_classes = [IsAuthenticated]
-#     authentication_classes = [BasicAuthentication]
-    
-#     def post(self, request):
-#         current_user = request.user
-#         invoice = create_invoice(**request, user=current_user)

@@ -8,9 +8,15 @@ from django.contrib.auth.tokens import PasswordResetTokenGenerator
 
 sms = M360()
 
-def send_mail_service(*, email: str, content: str, otp: str):
+def send_mail_otp_service(*, email: str, content: str, otp: str):
     subject = content
     body = "This is OTP code: " + otp
+    to = [email]
+    send_mail(subject, body, settings.EMAIL_HOST_USER, to)
+
+def send_mail_service(*, email: str, subject: str, content: str):
+    subject = subject
+    body = content
     to = [email]
     send_mail(subject, body, settings.EMAIL_HOST_USER, to)
 

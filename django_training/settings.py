@@ -19,7 +19,7 @@ import environ
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-env = environ.Env(DEBUG=(bool, False), ENV_FILE=(str, None), ALLOWED_HOSTS=(list, []))
+env = environ.Env(DEBUG=(bool, False), ENV_FILE=(str, None), ALLOWED_HOSTS=(list, ['']))
 
 dotenv_file = os.path.join(BASE_DIR, ".env")
 if os.path.isfile(dotenv_file):
@@ -65,6 +65,7 @@ INSTALLED_APPS = [
     'graphene_django',
     'django_celery_beat',
     'django_celery_results',
+    'student_manager.stores',
 ]
 
 MIDDLEWARE = [
@@ -237,18 +238,6 @@ M360_PASSPHRASE='Km2dprID6v3J'
 M360_SHORTCODE=21581350
 
 # # celery settings
-# CELERY_BROKER_URL = "redis://redis:6379"
-# CELERY_RESULT_BACKEND = "redis://redis:6379"
-
-# from celery.schedules import crontab
-
-# CELERY_BEAT_SCHEDULE = {
-#     "sample_task": {
-#         "task": "core.tasks.sample_task",
-#         "schedule": crontab(minute="*/1"),
-#     },
-#     "send_email_invoice": {
-#         "task": "core.tasks.send_email_invoice",
-#         "schedule": crontab(hour="*/1"),
-#     },
-# }
+CELERY_BROKER_URL = "redis://127.0.0.1:6379"
+CELERY_RESULT_BACKEND = "django-db"
+CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"

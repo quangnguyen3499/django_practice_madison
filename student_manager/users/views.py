@@ -8,7 +8,7 @@ from rest_framework.generics import ListAPIView
 from rest_framework.authentication import BasicAuthentication
 from commons.exceptions import NotFoundException, ValidationException
 from rest_framework.permissions import IsAuthenticated
-from .services import send_mail_service, send_user_otp, change_password, validate_user_otp
+from .services import send_mail_otp_service, send_user_otp, change_password, validate_user_otp
 from rest_framework import serializers
 # from rest_framework_simplejwt.authentication import JWTAuthentication
 
@@ -73,7 +73,7 @@ class SendMailResetPasswordView(APIView):
 
     def post(self, request: HttpRequest):
         new_otp = request.user.generate_otp()
-        send_mail_service(
+        send_mail_otp_service(
             email=request.data['email'], 
             content="test content",
             otp = new_otp
