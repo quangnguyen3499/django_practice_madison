@@ -32,7 +32,7 @@ if os.path.isfile(dotenv_file):
 SECRET_KEY = 'django-insecure-$1ty%e=j&0fxr--&&=qxf_e(x6^c+vf^1jrr7a47+u1t7kyvf7'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = [
     '*',
@@ -198,7 +198,7 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
 EMAIL_HOST_USER = 'baoquanggogreen341999@gmail.com'
-EMAIL_HOST_PASSWORD = 'baoquanggogreenquang_81%_smile'
+EMAIL_HOST_PASSWORD = 'sdnkpksgkxldqljv'
 DOMAIN_URL = 'localhost'
 
 CSRF_COOKIE_SECURE = True
@@ -237,7 +237,16 @@ M360_URL = env("M360_URL", default="https://api.m360.com.ph/v3/api/globelabs/mt/
 M360_PASSPHRASE='Km2dprID6v3J'
 M360_SHORTCODE=21581350
 
-# # celery settings
+# celery settings
 CELERY_BROKER_URL = "redis://127.0.0.1:6379"
-CELERY_RESULT_BACKEND = "django-db"
-CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
+CELERY_RESULT_BACKEND = "redis://127.0.0.1:6379"
+# CELERY_BEAT_SCHEDULE = {
+    # 'send_email_invoice': {
+    #     'task': 'student_manager.messagebus.tasks.send_invoice',
+    #     'schedule': 30.0,
+    # },
+#     'create_monthly_invoice': {
+#         'task': 'tasks.create_invoice',
+#         'schedule': crontab(0, 0, day_of_month='28'),
+#     },
+# }

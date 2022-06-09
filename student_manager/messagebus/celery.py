@@ -8,16 +8,9 @@ app = Celery("student_manager")
 app.config_from_object("django.conf:settings", namespace="CELERY")
 app.autodiscover_tasks()
 
-# app.conf.beat_schedule = {
-#     'send_email_invoice': {
-#         'task': 'tasks.send_invoice',
-#         'schedule': 30.0,
-#         'args': (16,16)
-#     },
-#     'create_monthly_invoice': {
-#         'task': 'tasks.create_invoice',
-#         'schedule': crontab(0, 0, day_of_month='28'),
-#     },
-# }
-
 app.conf.timezone = 'UTC'
+# app.conf.beat_schedule = {
+#     'send_monthly_invoice': {
+#         'task': 'send_invoice'
+#     }
+# }
