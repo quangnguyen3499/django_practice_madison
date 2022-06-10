@@ -35,3 +35,10 @@ def get_cart_by_id(*,
     except:
         raise NotFoundException()
     return cart
+
+def get_product(*, pk: int) -> Product:
+    try:
+        product = Product.objects.get(pk=pk)
+    except:
+        raise NotFoundException()
+    return product

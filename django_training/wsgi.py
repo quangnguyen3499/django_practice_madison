@@ -8,9 +8,6 @@ https://docs.djangoproject.com/en/4.0/howto/deployment/wsgi/
 """
 
 import os
-import sys
-
-sys.path.append('.')
 
 from django.core.wsgi import get_wsgi_application
 

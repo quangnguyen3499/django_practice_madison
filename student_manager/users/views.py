@@ -17,7 +17,9 @@ class CreateUserView(APIView):
         data: dict = request.data
         serializer_data = CreateUserSerializer(data=data)
         if serializer_data.is_valid():
-            serializer_data.save()
+            user = serializer_data.save()
+            init_otp = user.generate_otp()
+            send_mail_otp_service(email=data["email"], content="Activation mail", otp=init_otp)
             return Response(serializer_data.data)
         else:
             raise ValidationException(data=serializer_data.errors)

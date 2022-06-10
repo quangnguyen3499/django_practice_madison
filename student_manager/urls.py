@@ -8,4 +8,5 @@ urlpatterns = [
     path('upload/', include('student_manager.uploader.urls')),
     path('ocr/', include('student_manager.ocr.urls')),
     path('stores/', include('student_manager.stores.urls')),
+    path('vouchers/', include('student_manager.vouchers.urls')),
 ]

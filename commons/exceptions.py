@@ -29,3 +29,17 @@ class ValidationException(APIException):
             self.data = data
 
         super().__init__(code=self.default_code)
+
+class ForbiddenException(APIException):
+    """
+    Class for forbidden exception.
+    """
+
+    status_code = status.HTTP_403_FORBIDDEN
+    default_code = APIErrorCode.HTTP_403_FORBIDDEN
+
+    def __init__(self, data=None):
+        if data is not None:
+            self.data = data
+
+        super().__init__(code=self.default_code)

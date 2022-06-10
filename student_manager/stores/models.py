@@ -90,6 +90,9 @@ class Product(models.Model):
     updated_at = models.DateTimeField(auto_now_add=timezone.now())
     created_at = models.DateTimeField(auto_now=timezone.now())
 
+    class Meta:
+        unique_together = ('name', 'brand',)
+
 class Order(models.Model):
     class DeliveryMethod(models.TextChoices):
         DELIVERY = "DELIVERY", "Deliver"
@@ -182,3 +185,15 @@ class StoreProductConfig(models.Model):
 
     class Meta:
         unique_together = ("store", "product")
+
+class CartItem(models.Model):
+    cart = models.ForeignKey(Cart, related_name="line_items", on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.PROTECT)
+    quantity = models.IntegerField(default=0)
+
+    class Meta:
+        ordering = ["id"]
+
+    @property
+    def subtotal(self):
+        return self.product.total_price * self.quantity

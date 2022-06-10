@@ -1,12 +1,13 @@
-from commons.exceptions import NotFoundException
+from commons.exceptions import NotFoundException, ValidationException, ForbiddenException
 from student_manager.users.models import User
-from .models import Store, Cart
+from .models import CartItem, Product, Store, Cart
 from django.db import transaction
+from django.core.files import File
 
 @transaction.atomic
 def create_store(*, 
     user: User,
-    image: str,
+    image: File = None,
     name: str,
     url: str,
     email: str,
@@ -16,7 +17,7 @@ def create_store(*,
     landmark: str,
     longitude: int,
     latitude: int
-):
+) -> Store:
     store = Store.objects.create(
         user=user,
         image=image,
@@ -58,3 +59,51 @@ def update_cart(*,
     cart.owner = owner
     cart.save()
     return cart
+
+def add_item(*,
+    cart: Cart,
+    user: User = None,
+    product: Product,
+    quantity: int
+) -> CartItem:
+    cart_data = CartItem.objects.filter(cart=cart, product=product).first()
+
+    if cart_data:
+        cart_data.quantity += quantity
+        cart_data.save()
+    else:
+        cart_data = CartItem.objects.create(
+            cart=cart,
+            product=product,
+            quantity=quantity
+        )
+
+    return cart_data
+
+def create_product(*,
+    name: str,
+    brand: str,
+    description: str,
+    average_cost: int,
+    status: str,
+    sellable: bool
+) -> Product:
+    product = Product.objects.create(
+        name=name,
+        brand=brand,
+        description=description,
+        average_cost=average_cost,
+        status=status,
+        sellable=sellable
+    )
+    return product
+
+def delete_item(*,
+    cart: Cart,
+    user: User,
+    product: Product
+) -> CartItem:
+    owner = cart.owner
+    if user != owner:
+        raise ForbiddenException()
+    cart_item = CartItem.objects.filter(cart=cart, product=product).delete()

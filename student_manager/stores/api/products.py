@@ -2,6 +2,7 @@ from rest_framework.authentication import BasicAuthentication
 from rest_framework.views import APIView
 from commons.middlewares.pagination import StandardResultsSetPagination
 from student_manager.stores.selectors import list_product
+from student_manager.stores.services import create_product
 from rest_framework import serializers
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -26,3 +27,14 @@ class ListProductAPIView(ListAPIView):
         query_dict = dict((k, v) for k, v in data.items() if v)
         queryset = list_product(filter=query_dict)
         return queryset
+
+class CreateProductAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [BasicAuthentication]
+
+    def post(self, request):
+        data: dict = request.data
+        serializer = DetailProductSerializer(data=data)
+        serializer.is_valid(raise_exception=True)
+        create_product(**serializer.validated_data)
+        return Response({"message": "success"})

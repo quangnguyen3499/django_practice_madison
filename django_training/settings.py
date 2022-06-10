@@ -66,6 +66,7 @@ INSTALLED_APPS = [
     'django_celery_beat',
     'django_celery_results',
     'student_manager.stores',
+    'student_manager.vouchers',
 ]
 
 MIDDLEWARE = [
@@ -211,7 +212,7 @@ DATABASES = {
         'NAME': 'student_manager',
         'USER': 'root',
         'PASSWORD': '03041999',
-        'HOST': 'localhost',
+        'HOST': 'postgres',
         'PORT': '5432'
     }
 }

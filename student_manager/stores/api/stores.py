@@ -40,6 +40,7 @@ class CreateStoreAPIView(APIView):
 
     def post(self, request):
         current_user = request.user
+        request.data['image'] = request.FILES["image"]
         serializer = self.InputSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         store = create_store(user=current_user, **serializer.validated_data)
