@@ -6,6 +6,23 @@ from rest_framework.generics import ListAPIView
 from rest_framework.authentication import BasicAuthentication
 from commons.exceptions import NotFoundException, ValidationException
 from rest_framework.permissions import IsAuthenticated
+from rest_framework import serializers
+from .services import create_voucher
+
+class VoucherDetailSerializer(serializers.Serializer):
+    name = serializers.CharField()
+    code = serializers.CharField()
+    user_limit = serializers.IntegerField()
+    max_redemption = serializers.IntegerField()
+    valid_until = serializers.DateTimeField()
+    promo_type = serializers.CharField()
+    discount_value = serializers.IntegerField()
+    minimum_order_amount = serializers.IntegerField()
+    min_order_count = serializers.IntegerField()
+    max_order_count = serializers.IntegerField()
+    exclusive_to_user = serializers.BooleanField(default=True)
+    active = serializers.BooleanField(default=True)
+    claimable = serializers.BooleanField(default=True)
 
 class CreateVoucherAPIView(APIView):
     class CreateVoucherSerializer(serializers.Serializer):
@@ -13,7 +30,6 @@ class CreateVoucherAPIView(APIView):
         code = serializers.CharField()
         user_limit = serializers.IntegerField()
         max_redemption = serializers.IntegerField()
-        valid_until = serializers.DateTimeField()
         promo_type = serializers.CharField()
         discount_value = serializers.IntegerField()
         minimum_order_amount = serializers.IntegerField()
@@ -25,10 +41,10 @@ class CreateVoucherAPIView(APIView):
 
     def post(self, request: HttpRequest):
         data: dict = request.data
-        serializer = CreateVoucherSerializer(data=data)
+        serializer = self.CreateVoucherSerializer(data=data)
         serializer.is_valid(raise_exception=True)
         voucher = create_voucher(**serializer.validated_data)
-        return Response(CreateVoucherSerializer(voucher).data)
+        return Response(VoucherDetailSerializer(voucher).data)
 
 # class ListUserView(ListAPIView):
 #     serializer_class = DetailsUserSerializer
