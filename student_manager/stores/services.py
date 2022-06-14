@@ -1,11 +1,22 @@
-from commons.exceptions import NotFoundException, ValidationException, ForbiddenException
+from datetime import timedelta
+from commons.exceptions import NotFoundException, ForbiddenException
 from student_manager.users.models import User
-from .models import CartItem, Product, Store, Cart
+from .models import (
+    CartItem, 
+    DeliveryAddress, 
+    Product, 
+    Store, 
+    Cart, 
+    StoreAddress, 
+    Order
+)
 from django.db import transaction
 from django.core.files import File
+from django.utils import timezone
 
 @transaction.atomic
-def create_store(*, 
+def create_store(
+    *, 
     user: User,
     image: File = None,
     name: str,
@@ -34,7 +45,8 @@ def create_store(*,
 
     return store
 
-def create_cart(*,
+def create_cart(
+    *,
     owner: User,
     store: Store,
     ordering_for_id: int
@@ -50,7 +62,8 @@ def create_cart(*,
     )
     return cart
 
-def update_cart(*,
+def update_cart(
+    *,
     cart: Cart,
     ordering_for: User,
     owner: User
@@ -60,7 +73,8 @@ def update_cart(*,
     cart.save()
     return cart
 
-def add_item(*,
+def add_item(
+    *,
     cart: Cart,
     user: User = None,
     product: Product,
@@ -80,7 +94,8 @@ def add_item(*,
 
     return cart_data
 
-def create_product(*,
+def create_product(
+    *,
     name: str,
     brand: str,
     description: str,
@@ -98,7 +113,8 @@ def create_product(*,
     )
     return product
 
-def delete_item(*,
+def delete_item(
+    *,
     cart: Cart,
     user: User,
     product: Product
@@ -106,4 +122,45 @@ def delete_item(*,
     owner = cart.owner
     if user != owner:
         raise ForbiddenException()
-    cart_item = CartItem.objects.filter(cart=cart, product=product).delete()
+    CartItem.objects.filter(cart=cart, product=product).delete()
+
+def set_order_delivery_date(*, order:Order) -> Order:
+    if not order.approved_at:
+        return order
+    # TODO: logic being failed
+    delivery_date = order.approved_at + timedelta(weeks=1)
+    order.estimated_delivery_date = delivery_date
+    order.save()
+
+def create_order(
+    *,
+    user: User,
+    store: Store,
+    cart: Cart,
+    delivery_method: Order.DeliveryMethod,
+    store_address: StoreAddress,
+    delivery_address: DeliveryAddress,
+    status: Order.OrderStatus
+) -> Order:
+    approved_at = None
+    if status == Order.OrderStatus.FOR_PROCESSING:
+        approved_at = timezone.now()
+
+    order = Order.objects.create(
+        user=user,
+        store=store,
+        cart=cart,
+        delivery_method=delivery_method,
+        delivery_address=delivery_address,
+        store_address=store_address,
+        status=status,
+        approved_at=approved_at
+    )
+
+    set_order_delivery_date(order=order)
+    order.total_cl_payable_amount = order.total_amount - order.total_cl_margin
+    order.save()
+
+    # apply promo
+    
+    return order

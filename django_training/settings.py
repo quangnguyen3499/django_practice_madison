@@ -67,6 +67,7 @@ INSTALLED_APPS = [
     'django_celery_results',
     'student_manager.stores',
     'student_manager.vouchers',
+    'student_manager.promos',
 ]
 
 MIDDLEWARE = [
@@ -198,8 +199,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'baoquanggogreen341999@gmail.com'
-EMAIL_HOST_PASSWORD = 'sdnkpksgkxldqljv'
+EMAIL_HOST_USER = ''
+EMAIL_HOST_PASSWORD = ''
 DOMAIN_URL = 'localhost'
 
 CSRF_COOKIE_SECURE = True
@@ -211,7 +212,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'student_manager',
         'USER': 'root',
-        'PASSWORD': '03041999',
+        'PASSWORD': '',
         'HOST': 'postgres',
         'PORT': '5432'
     }
@@ -224,9 +225,9 @@ DATABASES = {
 # )
 # DATABASES['default'].update(db_from_env)
 
-AWS_ACCESS_KEY_ID = 'AKIAYMACZHLYSI623T4A'
-AWS_SECRET_ACCESS_KEY = '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'
-AWS_STORAGE_BUCKET_NAME = 'ocr-bucket-999'
+AWS_ACCESS_KEY_ID = ''
+AWS_SECRET_ACCESS_KEY = '+sHGRaUzreWefudW4kKz'
+AWS_STORAGE_BUCKET_NAME = ''
 AWS_S3_SIGNATURE_VERSION = 's3v4'
 AWS_S3_REGION_NAME = 'ap-southeast-1'
 AWS_S3_FILE_OVERWRITE = False
@@ -235,8 +236,8 @@ AWS_S3_VERIFY = True
 DEFAULT_FILE_STORAGE = 'student_manager.uploader.services.PublicS3MediaStorage'
 
 M360_URL = env("M360_URL", default="https://api.m360.com.ph/v3/api/globelabs/mt/")
-M360_PASSPHRASE='Km2dprID6v3J'
-M360_SHORTCODE=21581350
+M360_PASSPHRASE=""
+M360_SHORTCODE=""
 
 # celery settings
 CELERY_BROKER_URL = "redis://127.0.0.1:6379"

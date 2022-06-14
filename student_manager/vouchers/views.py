@@ -4,10 +4,10 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.generics import ListAPIView
 from rest_framework.authentication import BasicAuthentication
-from commons.exceptions import NotFoundException, ValidationException
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import serializers
 from .services import create_voucher
+from .selectors import voucher_available_to_user
 
 class VoucherDetailSerializer(serializers.Serializer):
     name = serializers.CharField()
@@ -46,47 +46,12 @@ class CreateVoucherAPIView(APIView):
         voucher = create_voucher(**serializer.validated_data)
         return Response(VoucherDetailSerializer(voucher).data)
 
-# class ListUserView(ListAPIView):
-#     serializer_class = DetailsUserSerializer
-#     pagination_class = StandardResultsSetPagination
-#     authentication_classes = [BasicAuthentication]
-#     permission_classes = [IsAuthenticated]
+class ListVoucherAvailableToView(ListAPIView):
+    serializer_class = VoucherDetailSerializer
+    pagination_class = StandardResultsSetPagination
+    authentication_classes = [BasicAuthentication]
+    permission_classes = [IsAuthenticated]
 
-#     def get_queryset(self):
-#         data: dict = self.request.GET
-#         queryset = User.objects.filter(username__icontains=data['username']).order_by('id')
-#         return queryset
-
-# class GetAndUpdateAndDeleteUserView(APIView):
-#     authentication_classes = [BasicAuthentication]
-#     permission_classes = [IsAuthenticated]
-
-#     def get(self, request: HttpRequest, user_id: int):
-#         data = User.objects.filter(pk=user_id)
-#         if not data.exists():
-#             raise NotFoundException
-#         serializer_data = DetailsUserSerializer(data.first())
-#         return Response(serializer_data.data)
-
-#     def put(self, request: HttpRequest, user_id: int):
-#         data: dict = request.data
-#         user = User.objects.filter(pk=user_id)
-#         if not user.exists():
-#             raise NotFoundException
-#         serializer_data = DetailsUserSerializer(user.first(), data=data)
-#         if serializer_data.is_valid():
-#             serializer_data.save()
-#             return Response(serializer_data.data)
-#         else:
-#             raise ValidationException(data=serializer_data.errors)
-
-#     def delete(self, request: HttpRequest, user_id: int):
-#         user = User.objects.filter(pk=user_id)
-#         if not user.exists():
-#             raise NotFoundException
-#         serializer_data = DeleteUserSerializer(user.first(), data=request.data)
-#         if serializer_data.is_valid():
-#             serializer_data.save()
-#             return Response({})
-#         else:
-#             raise ValidationException(data=serializer_data.errors)
+    def get_queryset(self):
+        queryset = voucher_available_to_user(user=self.request.user)
+        return queryset

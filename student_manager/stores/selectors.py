@@ -1,5 +1,5 @@
 from commons.exceptions import NotFoundException, ValidationException
-from .models import Store, Product, Cart
+from .models import DeliveryAddress, Store, Product, Cart, Order, StoreAddress
 from django.db.models.query import QuerySet
 from django.db.models import Q
 
@@ -42,3 +42,25 @@ def get_product(*, pk: int) -> Product:
     except:
         raise NotFoundException()
     return product
+
+def get_order_list() -> QuerySet[Order]:
+    orders = Order.objects.all()
+    return orders
+
+def get_address_by_id(*,
+    pk: int
+) -> StoreAddress:
+    try:
+        store_address = StoreAddress.objects.get(pk=pk)
+    except:
+        raise NotFoundException()
+    return store_address
+
+def get_delivery_address_by_id(*,
+    pk: int
+) -> DeliveryAddress:
+    try:
+        delivery_address = DeliveryAddress.objects.get(pk=pk)
+    except:
+        raise NotFoundException()
+    return delivery_address

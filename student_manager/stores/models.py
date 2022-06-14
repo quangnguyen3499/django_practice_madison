@@ -2,6 +2,7 @@ from django.db import models
 from django.utils import timezone
 from student_manager.users.models import User
 from commons.exceptions import ValidationException
+from django.utils.translation import gettext_lazy as _
 
 def store_img_path(instance, filename):
     return f"stores/{instance.url}/{filename}"
@@ -197,3 +198,49 @@ class CartItem(models.Model):
     @property
     def subtotal(self):
         return self.product.total_price * self.quantity
+
+class ProcessingCutoff(models.Model):
+    class OrderDays(models.IntegerChoices):
+        MONDAY = 1, _("Monday")
+        TUESDAY = 2, _("Tuesday")
+        WEDNESDAY = 3, _("Wednesday")
+        THURSDAY = 4, _("Thursday")
+        FRIDAY = 5, _("Friday")
+        SATURDAY = 6, _("Saturday")
+        SUNDAY = 7, _("Sunday")
+
+    class DeliveryDays(models.IntegerChoices):
+        TODAY = 0, _("On the Order Day")
+        MONDAY = 1, _("Next Monday")
+        TUESDAY = 2, _("Next Tuesday")
+        WEDNESDAY = 3, _("Next Wednesday")
+        THURSDAY = 4, _("Next Thursday")
+        FRIDAY = 5, _("Next Friday")
+        SATURDAY = 6, _("Next Saturday")
+        SUNDAY = 7, _("Next Sunday")
+
+    order_day = models.IntegerField(
+        _("Order Day"), default=0, choices=OrderDays.choices
+    )
+    start_time = models.TimeField(_("From Order Time"), default="00:00:00")
+    end_time = models.TimeField(_("To Order Time"), default="23:59:59")
+    cutoff_day = models.IntegerField(
+        _("Cutoff Day"), default=0, choices=DeliveryDays.choices
+    )
+    cutoff_time = models.TimeField(_("Cutoff Day"), default="17:00:00")
+    delivery_day = models.IntegerField(
+        _("Delivery Day"), default=0, choices=DeliveryDays.choices
+    )
+
+class OrderPromo(models.Model):
+    order = models.ForeignKey(Order, related_name="promos", on_delete=models.CASCADE)
+    # promo = models.ForeignKey(
+    #     "promo.Promo",
+    #     related_name="+",
+    #     null=True,
+    #     blank=True,
+    #     on_delete=models.SET_NULL,
+    # )
+    code = models.CharField(max_length=255, null=True, blank=True)
+    description = models.CharField(max_length=255)
+    discount_amount = models.IntegerField()
