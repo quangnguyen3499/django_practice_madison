@@ -14,7 +14,7 @@ services:
       - ./:/app
 
   postgres:
-    image: postgres:12
+    image: postgres:16
     environment:
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=03041999
